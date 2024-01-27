@@ -1,7 +1,6 @@
 import os
 import shutil
 import json
-from struct import pack
 
 def load_manifest(file_path):
     manifest = {}
