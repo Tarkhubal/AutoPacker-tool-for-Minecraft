@@ -151,12 +151,34 @@ if __name__ == "__main__":
         target_folder = create_pack_folders(pack_title, pack_version, versions, pack_folder, pack_image, pack_mcmeta)
         print("      Pack generated.")
         print("      Zipping pack")
-                
+        
+        
+        global zipf, zipped_cnt
         zipf = zipfile.ZipFile(f"./{target_folder}.zip", "x")
-        for f in os.listdir(f"./{target_folder}"):
-            zipf.write(f"./{target_folder}/{f}", arcname=f)
+        zipped_cnt = 0
+
+        def zip_the_files(base, path):
+            global zipf, zipped_cnt
+            # print("\n", path)
+            for f in os.listdir(f"./{path}"):
+                # print(f)
+                ac_path = f"{path}/{f}"
+                if os.path.isfile(ac_path):
+                    zipf.write(ac_path, arcname=ac_path.replace(base, ""))
+                    # print(f"is a file  {ac_path}")
+                    zipped_cnt += 1
+                    continue
+                
+                # print(f"is a dir  {ac_path}")
+                zipf.write(ac_path, arcname=ac_path.replace(base, ""))
+                zipped_cnt += 1
+                zip_the_files(base, path=ac_path)
+        
+        zip_the_files(base=target_folder, path=target_folder)
+        
         zipf.close()
-        print("      Pack zipped.")
+        print(f"      Pack zipped. {zipped_cnt} file{'s' if zipped_cnt > 1 else ''} zipped")
+        del zipf, zipped_cnt
         
         
     
